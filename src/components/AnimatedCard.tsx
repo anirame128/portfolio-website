@@ -116,6 +116,11 @@ function CardContent({ showContent }: { showContent: boolean }) {
         height: `${CARD_DIMENSIONS.HEIGHT - (CARD_DIMENSIONS.MARGIN * 2)}px`
       }}
     >
+      {/* Black transparent overlay */}
+      <div 
+        className="absolute inset-2 rounded-2xl"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
+      ></div>
       <ProfilePicture />
     </div>
   );
@@ -147,5 +152,4 @@ function ProfilePicture() {
     </div>
   );
 }
-
 
