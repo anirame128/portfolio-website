@@ -19,107 +19,23 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-/* Custom animations for the card component - bidirectional drawing */
-@keyframes drawTopLeft {
+/* Custom animations for the card component */
+
+/* Animation that truly draws from center outward */
+@keyframes drawFromCenter {
   0% {
-    stroke-dashoffset: 144;
+    stroke-dashoffset: 200; /* Start with full line hidden */
   }
   100% {
-    stroke-dashoffset: 0;
+    stroke-dashoffset: 0; /* Reveal the full line */
   }
 }
 
-@keyframes drawTopRight {
+@keyframes drawFromCenterVertical {
   0% {
-    stroke-dashoffset: 144;
+    stroke-dashoffset: 360; /* Start with full line hidden */
   }
   100% {
-    stroke-dashoffset: 0;
+    stroke-dashoffset: 0; /* Reveal the full line */
   }
-}
-
-@keyframes drawRightTop {
-  0% {
-    stroke-dashoffset: 176;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawRightBottom {
-  0% {
-    stroke-dashoffset: 176;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawBottomRight {
-  0% {
-    stroke-dashoffset: 144;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawBottomLeft {
-  0% {
-    stroke-dashoffset: 144;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawLeftBottom {
-  0% {
-    stroke-dashoffset: 176;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes drawLeftTop {
-  0% {
-    stroke-dashoffset: 176;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-.animate-draw-top-left {
-  animation: drawTopLeft 0.4s ease-in-out forwards;
-}
-
-.animate-draw-top-right {
-  animation: drawTopRight 0.4s ease-in-out 0.2s forwards;
-}
-
-.animate-draw-right-top {
-  animation: drawRightTop 0.4s ease-in-out 0.4s forwards;
-}
-
-.animate-draw-right-bottom {
-  animation: drawRightBottom 0.4s ease-in-out 0.6s forwards;
-}
-
-.animate-draw-bottom-right {
-  animation: drawBottomRight 0.4s ease-in-out 0.8s forwards;
-}
-
-.animate-draw-bottom-left {
-  animation: drawBottomLeft 0.4s ease-in-out 1s forwards;
-}
-
-.animate-draw-left-bottom {
-  animation: drawLeftBottom 0.4s ease-in-out 1.2s forwards;
-}
-
-.animate-draw-left-top {
-  animation: drawLeftTop 0.4s ease-in-out 1.4s forwards;
 }
