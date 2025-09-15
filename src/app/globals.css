@@ -39,3 +39,71 @@ body {
     stroke-dashoffset: 0; /* Reveal the full line */
   }
 }
+
+/* Right-side Stripe-like blue mesh gradient */
+.right-blue-gradient {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  right: 0;
+  width: clamp(280px, 42vw, 760px);
+  z-index: 0;              /* behind content */
+  opacity: 0.95;
+  transform: translateZ(0);
+  /* Fade the left edge into the page */
+  -webkit-mask-image: linear-gradient(to left, black 40%, transparent 85%);
+  mask-image: linear-gradient(to left, black 40%, transparent 85%);
+}
+
+.right-blue-gradient::before {
+  content: "";
+  position: absolute;
+  /* Bleed outward slightly so the blur doesn’t shrink the glow */
+  inset: -20% -25% -20% -10%;
+  /* Layered radial gradients for the "mesh" blobs (blue-heavy) */
+  background:
+    radial-gradient(60% 80% at 75% 25%, rgba(96, 165, 250, 0.60) 0 55%, transparent 60%),
+    radial-gradient(45% 70% at 95% 55%, rgba(59, 130, 246, 0.55) 0 52%, transparent 58%),
+    radial-gradient(40% 50% at 70% 70%, rgba(147, 197, 253, 0.65) 0 48%, transparent 54%),
+    radial-gradient(70% 90% at 100% 15%, rgba(30, 64, 175, 0.45) 0 58%, transparent 64%),
+    radial-gradient(35% 40% at 85% 85%, rgba(37, 99, 235, 0.50) 0 50%, transparent 56%);
+  filter: blur(60px) saturate(120%);
+  animation: blue-mesh-float 22s ease-in-out infinite alternate;
+}
+
+/* Subtle parallax drift */
+@keyframes blue-mesh-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(60px) saturate(120%);
+  }
+  50% {
+    transform: translate3d(-2%, 3%, 0) scale(1.02);
+    filter: blur(62px) saturate(125%);
+  }
+  100% {
+    transform: translate3d(-4%, -2%, 0) scale(1.03);
+    filter: blur(60px) saturate(122%);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .right-blue-gradient::before {
+    animation: none;
+  }
+}
+
+/* Optional dark mode tuning, if you add dark backgrounds later */
+@media (prefers-color-scheme: dark) {
+  .right-blue-gradient { opacity: 0.9; }
+  .right-blue-gradient::before {
+    /* Slightly deepen hues in dark mode */
+    background:
+      radial-gradient(60% 80% at 75% 25%, rgba(96, 165, 250, 0.55) 0 55%, transparent 60%),
+      radial-gradient(45% 70% at 95% 55%, rgba(59, 130, 246, 0.55) 0 52%, transparent 58%),
+      radial-gradient(40% 50% at 70% 70%, rgba(147, 197, 253, 0.6) 0 48%, transparent 54%),
+      radial-gradient(70% 90% at 100% 15%, rgba(30, 64, 175, 0.5) 0 58%, transparent 64%),
+      radial-gradient(35% 40% at 85% 85%, rgba(29, 78, 216, 0.5) 0 50%, transparent 56%);
+  }
+}

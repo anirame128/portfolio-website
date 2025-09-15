@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 // Animation timing constants
 const ANIMATION_TIMING = {
@@ -33,9 +34,9 @@ export default function AnimatedCard() {
 
   return (
     <div className="relative w-[28rem] h-[48rem] ml-8">
-      <AnimatedOutline 
-        showOutline={showOutline} 
-        hideOutline={hideOutline} 
+      <AnimatedOutline
+        showOutline={showOutline}
+        hideOutline={hideOutline}
       />
       <CardContent showContent={showContent} />
     </div>
@@ -43,12 +44,12 @@ export default function AnimatedCard() {
 }
 
 // Animated Outline Component
-function AnimatedOutline({ 
-  showOutline, 
-  hideOutline 
-}: { 
-  showOutline: boolean; 
-  hideOutline: boolean; 
+function AnimatedOutline({
+  showOutline,
+  hideOutline
+}: {
+  showOutline: boolean;
+  hideOutline: boolean;
 }) {
   return (
     <svg
@@ -93,8 +94,8 @@ function OutlinePaths() {
           strokeLinecap="round"
           strokeDasharray={path.dashArray}
           strokeDashoffset={path.dashArray}
-          style={{ 
-            animation: `${path.animation} ${ANIMATION_TIMING.OUTLINE_DURATION}ms ease-in-out forwards` 
+          style={{
+            animation: `${path.animation} ${ANIMATION_TIMING.OUTLINE_DURATION}ms ease-in-out forwards`
           }}
         />
       ))}
@@ -117,7 +118,7 @@ function CardContent({ showContent }: { showContent: boolean }) {
       }}
     >
       {/* Black transparent overlay */}
-      <div 
+      <div
         className="absolute inset-2 rounded-2xl"
         style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
       ></div>
@@ -132,8 +133,8 @@ function ProfilePicture() {
     <div className="flex justify-center pt-12">
       <div className="relative w-32 h-32">
         {/* Glowing revolving outline */}
-        <div 
-          className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-blue-400 to-blue-600 animate-spin" 
+        <div
+          className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-blue-400 to-blue-600 animate-spin"
           style={{
             background: 'conic-gradient(from 0deg, #60a5fa, #3b82f6, #1d4ed8, #60a5fa)',
             animation: 'spin 3s linear infinite',
@@ -142,9 +143,11 @@ function ProfilePicture() {
         />
         {/* Profile image */}
         <div className="absolute inset-1 w-30 h-30 rounded-full border-2 border-gray-300 overflow-hidden bg-white">
-          <img 
-            src="/profile_pic.jpeg" 
-            alt="Profile" 
+          <Image
+            src="/profile_pic.jpeg"
+            alt="Profile"
+            width={120}
+            height={120}
             className="w-full h-full object-cover"
           />
         </div>
