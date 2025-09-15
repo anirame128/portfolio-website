@@ -20,42 +20,24 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-/* Shimmer gradient animation */
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
-/* Enhanced multi-directional shimmer for buttons */
+/* Optimized shimmer for buttons - less intensive */
 @keyframes shimmer-flow {
   0% {
     background-position: 0% 50%;
-    transform: scale(1);
-  }
-  50% {
-    background-position: 100% 50%;
-    transform: scale(1.02);
   }
   100% {
-    background-position: 0% 50%;
-    transform: scale(1);
+    background-position: 100% 50%;
   }
 }
 
-/* Pulsing glow effect */
+/* Optimized pulsing glow effect */
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 8px rgba(125, 211, 252, 0.4), 0 0 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 6px rgba(125, 211, 252, 0.3), 0 0 10px rgba(59, 130, 246, 0.2);
   }
   50% {
-    box-shadow: 0 0 15px rgba(125, 211, 252, 0.6), 0 0 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 12px rgba(125, 211, 252, 0.4), 0 0 16px rgba(59, 130, 246, 0.3);
   }
 }
 
@@ -66,41 +48,19 @@ body {
 
 .shimmer-flow {
   background-size: 200% 200%;
-  animation: shimmer-flow 8s ease-in-out infinite;
+  animation: shimmer-flow 6s ease-in-out infinite;
+  will-change: background-position;
 }
 
 .glow-pulse {
-  animation: glow-pulse 4s ease-in-out infinite;
+  animation: glow-pulse 3s ease-in-out infinite;
+  will-change: box-shadow;
 }
 
-/* Hover animations for buttons */
-@keyframes hover-shimmer {
-  0% {
-    background-position: 0% 50%;
-    transform: scale(1.02);
-  }
-  50% {
-    background-position: 100% 50%;
-    transform: scale(1.04);
-  }
-  100% {
-    background-position: 0% 50%;
-    transform: scale(1.02);
-  }
-}
-
-@keyframes hover-glow {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(125, 211, 252, 0.4), 0 0 12px rgba(59, 130, 246, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 15px rgba(125, 211, 252, 0.6), 0 0 20px rgba(59, 130, 246, 0.4);
-  }
-}
 
 /* Button hover effects - simple transition only */
 .button-hover {
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .button-hover:hover {

@@ -17,7 +17,17 @@ const CARD_DIMENSIONS = {
   CARD_CONTENT_HEIGHT: 240, // Height for the card content section
 } as const;
 
-export default function AnimatedCard() {
+export default function AnimatedCard({
+  cardRef,
+  linkedinBtnRef,
+  setLinkedinHovered,
+  onLinkedinClick,
+}: {
+  cardRef: React.RefObject<HTMLDivElement | null>;
+  linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
+  setLinkedinHovered: (hovered: boolean) => void;
+  onLinkedinClick: () => void;
+}) {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
@@ -28,51 +38,74 @@ export default function AnimatedCard() {
   }, []);
 
   return (
-    <div className="relative ml-8" style={{ width: `${CARD_DIMENSIONS.WIDTH}px`, height: `${CARD_DIMENSIONS.HEIGHT}px` }}>
-      <CardContent showContent={showContent} />
+    <div
+      ref={cardRef}
+      className="relative ml-8"
+      style={{ width: CARD_DIMENSIONS.WIDTH, height: CARD_DIMENSIONS.HEIGHT }}
+    >
+      <CardContent
+        showContent={showContent}
+        linkedinBtnRef={linkedinBtnRef}
+        setLinkedinHovered={setLinkedinHovered}
+        onLinkedinClick={onLinkedinClick}
+      />
     </div>
   );
 }
 
 
 // Card Content Component
-function CardContent({ showContent }: { showContent: boolean }) {
+function CardContent({
+  showContent,
+  linkedinBtnRef,
+  setLinkedinHovered,
+  onLinkedinClick,
+}: {
+  showContent: boolean;
+  linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
+  setLinkedinHovered: (hovered: boolean) => void;
+  onLinkedinClick: () => void;
+}) {
   return (
     <div
       className={`absolute transition-all duration-500 ${
         showContent ? "opacity-100 scale-100" : "opacity-0 scale-95"
       }`}
       style={{
-        left: `${CARD_DIMENSIONS.MARGIN}px`,
-        top: `${CARD_DIMENSIONS.MARGIN}px`,
-        width: `${CARD_DIMENSIONS.WIDTH - CARD_DIMENSIONS.MARGIN * 2}px`,
-        height: `${CARD_DIMENSIONS.HEIGHT - CARD_DIMENSIONS.MARGIN * 2}px`,
+        left: CARD_DIMENSIONS.MARGIN,
+        top: CARD_DIMENSIONS.MARGIN,
+        width: CARD_DIMENSIONS.WIDTH - CARD_DIMENSIONS.MARGIN * 2,
+        height: CARD_DIMENSIONS.HEIGHT - CARD_DIMENSIONS.MARGIN * 2,
       }}
     >
       {/* Animated Gradient Border */}
-      <div className="relative w-full h-full rounded-2xl p-[2px] shimmer-border shadow-[0_0_25px_rgba(125,211,252,0.5)]" 
-           style={{
-             background: 'linear-gradient(to right, #7dd3fc, #3b82f6, #1e40af)'
-           }}>
+      <div
+        className="relative w-full h-full rounded-2xl p-[2px] shimmer-border shadow-[0_0_25px_rgba(125,211,252,0.5)]"
+        style={{
+          background: "linear-gradient(90deg,#7dd3fc,#3b82f6,#1e40af)",
+        }}
+      >
         {/* Inner Card */}
         <div className="w-full h-full bg-white rounded-2xl overflow-hidden">
           {/* Image Section */}
-          <div
-            className="relative"
-            style={{ height: `${CARD_DIMENSIONS.IMAGE_HEIGHT}px` }}
-          >
+          <div className="relative" style={{ height: CARD_DIMENSIONS.IMAGE_HEIGHT }}>
             <ProfilePicture />
           </div>
 
           {/* Card Content Section */}
           <div
             className="relative bg-white px-6 py-4"
-            style={{ height: `${CARD_DIMENSIONS.CARD_CONTENT_HEIGHT}px` }}
+            style={{ height: CARD_DIMENSIONS.CARD_CONTENT_HEIGHT }}
           >
-            <CardInfo />
+            <CardInfo
+              linkedinBtnRef={linkedinBtnRef}
+              setLinkedinHovered={setLinkedinHovered}
+              onLinkedinClick={onLinkedinClick}
+            />
           </div>
         </div>
       </div>
+
     </div>
   );
 }
@@ -92,7 +125,15 @@ function ProfilePicture() {
 }
 
 // Card Info Component
-function CardInfo() {
+function CardInfo({
+  linkedinBtnRef,
+  setLinkedinHovered,
+  onLinkedinClick,
+}: {
+  linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
+  setLinkedinHovered: (hovered: boolean) => void;
+  onLinkedinClick: () => void;
+}) {
   return (
     <div className="flex flex-col h-full">
       {/* Name with checkmark */}
@@ -104,22 +145,29 @@ function CardInfo() {
           </svg>
         </div>
       </div>
-      
+
       {/* Description */}
       <p className="text-sm text-gray-600 mb-2 font-bricolage">
         swe building in public • crafting digital experiences • exploring ai/ml
       </p>
-      
+
       {/* Modern Button Grid */}
       <div className="grid grid-cols-2 gap-2 mt-auto">
         {/* LinkedIn */}
-        <button className="group flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 relative overflow-hidden shimmer-flow glow-pulse button-hover" 
-               style={{ 
-                 background: 'linear-gradient(45deg, #7dd3fc, #3b82f6, #1e40af, #3b82f6, #7dd3fc)',
-                 backgroundSize: '200% 200%'
-               }}>
-          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        <button
+          ref={linkedinBtnRef}
+          className="group flex items-center gap-2 px-3 py-2 rounded-lg transition-transform duration-300 relative overflow-hidden shimmer-flow glow-pulse button-hover cursor-pointer"
+          style={{
+            background:
+              "linear-gradient(45deg,#7dd3fc,#3b82f6,#1e40af,#3b82f6,#7dd3fc)",
+            backgroundSize: "200% 200%",
+          }}
+          onMouseEnter={() => setLinkedinHovered(true)}
+          onMouseLeave={() => setLinkedinHovered(false)}
+          onClick={onLinkedinClick}
+        >
+          <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
           </svg>
           <span className="text-xs font-medium text-white font-bricolage">LinkedIn</span>
         </button>
@@ -187,4 +235,5 @@ function CardInfo() {
     </div>
   );
 }
+
 
