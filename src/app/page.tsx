@@ -68,6 +68,21 @@ export default function Page() {
     router.push("/projects");
   };
 
+  // Handle Experience button click - navigate to route
+  const handleExperienceClick = () => {
+    router.push("/experience");
+  };
+
+  // Handle Education button click - navigate to route
+  const handleEducationClick = () => {
+    router.push("/education");
+  };
+
+  // Handle Skills button click - navigate to route
+  const handleSkillsClick = () => {
+    router.push("/skills");
+  };
+
   // Listen for button clicks from CardInfo (via CustomEvent)
   useEffect(() => {
     const onOpen = (e: Event) => {
@@ -156,6 +171,9 @@ export default function Page() {
                   onEducationHoverChange={handleEducationHoverChange}
                   onSkillsHoverChange={handleSkillsHoverChange}
                   onProjectsClick={handleProjectsClick}
+                  onExperienceClick={handleExperienceClick}
+                  onEducationClick={handleEducationClick}
+                  onSkillsClick={handleSkillsClick}
                 />
               </motion.div>
 

@@ -30,6 +30,9 @@ export default function AnimatedCard({
   onEducationHoverChange,
   onSkillsHoverChange,
   onProjectsClick,
+  onExperienceClick,
+  onEducationClick,
+  onSkillsClick,
 }: {
   cardRef: React.RefObject<HTMLDivElement | null>;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -43,6 +46,9 @@ export default function AnimatedCard({
   onEducationHoverChange?: (isHovered: boolean) => void;
   onSkillsHoverChange?: (isHovered: boolean) => void;
   onProjectsClick?: () => void;
+  onExperienceClick?: () => void;
+  onEducationClick?: () => void;
+  onSkillsClick?: () => void;
 }) {
   const [showContent, setShowContent] = useState(false);
 
@@ -72,6 +78,9 @@ export default function AnimatedCard({
           onEducationHoverChange={onEducationHoverChange}
           onSkillsHoverChange={onSkillsHoverChange}
           onProjectsClick={onProjectsClick}
+          onExperienceClick={onExperienceClick}
+          onEducationClick={onEducationClick}
+          onSkillsClick={onSkillsClick}
         />
     </div>
   );
@@ -92,6 +101,9 @@ function CardContent({
   onEducationHoverChange,
   onSkillsHoverChange,
   onProjectsClick,
+  onExperienceClick,
+  onEducationClick,
+  onSkillsClick,
 }: {
   showContent: boolean;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -105,6 +117,9 @@ function CardContent({
   onEducationHoverChange?: (isHovered: boolean) => void;
   onSkillsHoverChange?: (isHovered: boolean) => void;
   onProjectsClick?: () => void;
+  onExperienceClick?: () => void;
+  onEducationClick?: () => void;
+  onSkillsClick?: () => void;
 }) {
   return (
     <div
@@ -149,6 +164,9 @@ function CardContent({
           onEducationHoverChange={onEducationHoverChange}
           onSkillsHoverChange={onSkillsHoverChange}
           onProjectsClick={onProjectsClick}
+          onExperienceClick={onExperienceClick}
+          onEducationClick={onEducationClick}
+          onSkillsClick={onSkillsClick}
         />
           </div>
         </div>
@@ -283,6 +301,9 @@ function CardInfo({
   onEducationHoverChange,
   onSkillsHoverChange,
   onProjectsClick,
+  onExperienceClick,
+  onEducationClick,
+  onSkillsClick,
 }: {
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
   githubBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -295,6 +316,9 @@ function CardInfo({
   onEducationHoverChange?: (isHovered: boolean) => void;
   onSkillsHoverChange?: (isHovered: boolean) => void;
   onProjectsClick?: () => void;
+  onExperienceClick?: () => void;
+  onEducationClick?: () => void;
+  onSkillsClick?: () => void;
 }) {
   return (
     <div className="flex flex-col h-full">
@@ -383,9 +407,9 @@ function CardInfo({
           onClick={() => {
             // Trigger particle scatter effect
             window.dispatchEvent(new CustomEvent("particle-scatter"));
-            // Small delay to let particles scatter before opening workspace
+            // Small delay to let particles scatter before navigating
             setTimeout(() => {
-              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "education" } }));
+              onEducationClick?.();
             }, 300);
           }}
           icon={
@@ -403,9 +427,9 @@ function CardInfo({
           onClick={() => {
             // Trigger particle scatter effect
             window.dispatchEvent(new CustomEvent("particle-scatter"));
-            // Small delay to let particles scatter before opening workspace
+            // Small delay to let particles scatter before navigating
             setTimeout(() => {
-              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "experience" } }));
+              onExperienceClick?.();
             }, 300);
           }}
           icon={
@@ -423,9 +447,9 @@ function CardInfo({
           onClick={() => {
             // Trigger particle scatter effect
             window.dispatchEvent(new CustomEvent("particle-scatter"));
-            // Small delay to let particles scatter before opening workspace
+            // Small delay to let particles scatter before navigating
             setTimeout(() => {
-              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "skills" } }));
+              onSkillsClick?.();
             }, 300);
           }}
           icon={
