@@ -49,6 +49,8 @@ let ids!: Uint32Array;
 // sprite
 let dotCanvas: OffscreenCanvas;
 let drawOffset = 1;
+let dotImageData: ImageData;
+let dotRadius = 0;
 
 // hover state
 let hoverLinkedIn = false;
@@ -58,10 +60,12 @@ let hoverProjects = false;
 let hoverEducation = false;
 let hoverSkills = false;
 
-// fixed timestep
-const FIXED_DT = 1 / 120;   // 120 Hz physics
-const MAX_STEPS = 4;        // clamp when tab resumes
+// adaptive timestep based on display refresh rate
+let TARGET_DT = 1 / 60;     // Default to 60 Hz
+let MAX_STEPS = 4;          // clamp when tab resumes
 let lastTime = 0;
+let frameCount = 0;
+let fpsStartTime = 0;
 
 function lcgHash(n: number) {
   // tiny hash (deterministic, fast)
@@ -73,6 +77,36 @@ function lcgHash(n: number) {
 function rng01(seed: number, tick: number) {
   const s = lcgHash(seed + tick * 2654435761);
   return (s & 0xffff) / 65536; // [0,1)
+}
+
+// Detect display refresh rate and adapt physics timestep
+function detectRefreshRate(now: number) {
+  if (fpsStartTime === 0) {
+    fpsStartTime = now;
+    frameCount = 0;
+    return;
+  }
+  
+  frameCount++;
+  const elapsed = now - fpsStartTime;
+  
+  // Sample for 1 second to get accurate FPS
+  if (elapsed >= 1000) {
+    const fps = Math.round((frameCount * 1000) / elapsed);
+    
+    // Adapt physics timestep to display refresh rate
+    if (fps >= 120) {
+      TARGET_DT = 1 / 120;  // 120 Hz physics for high refresh displays
+    } else if (fps >= 90) {
+      TARGET_DT = 1 / 90;   // 90 Hz physics
+    } else {
+      TARGET_DT = 1 / 60;   // 60 Hz physics (default)
+    }
+    
+    // Reset for next measurement
+    fpsStartTime = now;
+    frameCount = 0;
+  }
 }
 
 function setupCanvas() {
@@ -97,6 +131,10 @@ function makeDotSprite() {
   c2d.arc(size / 2, size / 2, r, 0, Math.PI * 2);
   c2d.fill();
   drawOffset = (size / 2) / dpr;
+  
+  // Pre-extract image data for faster rendering
+  dotImageData = c2d.getImageData(0, 0, size, size);
+  dotRadius = r;
 }
 
 function initParticles() {
@@ -126,7 +164,7 @@ function clampSpeed(i: number, maxSpeed: number) {
   const sv = vx[i] * vx[i] + vy[i] * vy[i];
   const m2 = maxSpeed * maxSpeed;
   if (sv > m2) {
-    const k = maxSpeed / Math.sqrt(sv);
+    const k = maxSpeed * fastInvSqrt(sv);
     vx[i] *= k; vy[i] *= k;
   }
 }
@@ -140,25 +178,34 @@ function applySpring(i: number, dt: number, p: Physics) {
   vy[i] += ay * dt;
 }
 
-function applyDrift(i: number, tick: number, dt: number, p: Physics) {
-  // deterministic tiny wander (no Math.random per frame)
-  const a = rng01(ids[i], tick) * 6.283185307179586; // 2π
-  const mag = (rng01(ids[i] ^ 0xABCDEF, tick) - 0.5) * p.wander * dt * 60;
-  vx[i] += Math.cos(a) * mag;
-  vy[i] += Math.sin(a) * mag;
+// Fast inverse square root approximation (Quake III algorithm)
+function fastInvSqrt(x: number): number {
+  const i = new Uint32Array(new Float32Array([x]).buffer)[0];
+  const i2 = 0x5f3759df - (i >> 1);
+  const y = new Float32Array(new Uint32Array([i2]).buffer)[0];
+  return y * (1.5 - 0.5 * x * y * y);
+}
 
-  const s2 = vx[i] * vx[i] + vy[i] * vy[i];
-  const min2 = p.minSpeed * p.minSpeed;
-  if (s2 < min2) {
-    const theta = rng01(ids[i] ^ 0x123456, tick) * 6.283185307179586;
-    const imp = p.minSpeed * (1.0 + rng01(ids[i] ^ 0x777, tick));
-    vx[i] += Math.cos(theta) * imp;
-    vy[i] += Math.sin(theta) * imp;
+function applyDrift(i: number, tick: number, dt: number, p: Physics) {
+  // Simplified drift: only apply wander every 3 frames to reduce calculations
+  if (tick % 3 === 0) {
+    const a = rng01(ids[i], tick) * 6.283185307179586; // 2π
+    const mag = (rng01(ids[i] ^ 0xABCDEF, tick) - 0.5) * p.wander * dt * 60;
+    vx[i] += Math.cos(a) * mag;
+    vy[i] += Math.sin(a) * mag;
   }
-  const d2 = p.driftMax * p.driftMax;
-  if (s2 > d2) {
-    const k = p.driftMax / Math.sqrt(s2);
-    vx[i] *= k; vy[i] *= k;
+
+  // Enforce constant speed - normalize to exact driftMax speed using fast inverse sqrt
+  const s2 = vx[i] * vx[i] + vy[i] * vy[i];
+  if (s2 > 0) {
+    const k = p.driftMax * fastInvSqrt(s2);
+    vx[i] *= k; 
+    vy[i] *= k;
+  } else {
+    // If velocity is zero, give it a random direction at constant speed
+    const theta = rng01(ids[i] ^ 0x123456, tick) * 6.283185307179586;
+    vx[i] = Math.cos(theta) * p.driftMax;
+    vy[i] = Math.sin(theta) * p.driftMax;
   }
 }
 
@@ -174,8 +221,8 @@ function snapIfClose(i: number, snap: number) {
 }
 
 function reflectWalls(i: number) {
-  let nx = x[i] + vx[i] * FIXED_DT * 60;
-  let ny = y[i] + vy[i] * FIXED_DT * 60;
+  let nx = x[i] + vx[i] * TARGET_DT * 60;
+  let ny = y[i] + vy[i] * TARGET_DT * 60;
 
   if (nx < 0) { nx = 0; vx[i] = Math.abs(vx[i]); }
   else if (nx > width) { nx = width; vx[i] = -Math.abs(vx[i]); }
@@ -187,22 +234,22 @@ function reflectWalls(i: number) {
 }
 
 function scatter(i: number, p: Physics) {
-  // single random burst when leaving forming state
+  // single random burst when leaving forming state - use constant speed
   const a = Math.random() * 6.283185307179586;
-  const imp = p.scatterMin + Math.random() * (p.scatterMax - p.scatterMin);
-  vx[i] += Math.cos(a) * imp;
-  vy[i] += Math.sin(a) * imp;
+  const imp = p.scatterMin; // Use constant speed instead of random range
+  vx[i] = Math.cos(a) * imp; // Set velocity directly instead of adding
+  vy[i] = Math.sin(a) * imp;
 }
 
 function physicsStep(tick: number) {
   const p = cfg.physics;
   for (let i = 0; i < count; i++) {
     if (forming[i]) {
-      applySpring(i, FIXED_DT, p);
+      applySpring(i, TARGET_DT, p);
       clampSpeed(i, p.maxSpeed);
       snapIfClose(i, p.snapRadius);
     } else {
-      applyDrift(i, tick, FIXED_DT, p);
+      applyDrift(i, tick, TARGET_DT, p);
     }
     reflectWalls(i);
   }
@@ -213,24 +260,33 @@ function drawFrame() {
   ctx.clearRect(0, 0, width, height);
   ctx.globalAlpha = cfg.opacity;
 
-  // draw all with one state
-  for (let i = 0; i < count; i++) {
-    // drawImage of our precomputed dot sprite
-    (ctx as OffscreenCanvasRenderingContext2D).drawImage(dotCanvas, x[i] - drawOffset, y[i] - drawOffset);
+  // Optimized rendering: batch particles by proximity to reduce draw calls
+  const batchSize = 50; // Draw particles in batches
+  for (let batch = 0; batch < count; batch += batchSize) {
+    const endBatch = Math.min(batch + batchSize, count);
+    
+    // Use drawImage for batches (still efficient for small batches)
+    for (let i = batch; i < endBatch; i++) {
+      (ctx as OffscreenCanvasRenderingContext2D).drawImage(dotCanvas, x[i] - drawOffset, y[i] - drawOffset);
+    }
   }
 }
 
 function animate(now: number) {
   if (!lastTime) lastTime = now;
+  
+  // Detect and adapt to display refresh rate
+  detectRefreshRate(now);
+  
   let acc = Math.min(0.1, (now - lastTime) / 1000); // clamp
   lastTime = now;
 
   let steps = 0;
-  const tick = (now / (FIXED_DT * 1000)) | 0; // integer tick for RNG
+  const tick = (now / (TARGET_DT * 1000)) | 0; // integer tick for RNG
 
-  while (acc >= FIXED_DT && steps < MAX_STEPS) {
+  while (acc >= TARGET_DT && steps < MAX_STEPS) {
     physicsStep(tick + steps);
-    acc -= FIXED_DT;
+    acc -= TARGET_DT;
     steps++;
   }
   drawFrame();

@@ -309,7 +309,14 @@ function CardInfo({
       <div className="grid grid-cols-2 gap-2 mt-auto">
         <ActionButton
           ref={linkedinBtnRef}
-          onClick={onLinkedinClick}
+          onClick={() => {
+            // Trigger particle scatter effect
+            window.dispatchEvent(new CustomEvent("particle-scatter"));
+            // Small delay to let particles scatter before redirecting
+            setTimeout(() => {
+              onLinkedinClick();
+            }, 300);
+          }}
           onLinkedInHoverChange={onLinkedInHoverChange}
           isLinkedIn={true}
           icon={
@@ -323,7 +330,14 @@ function CardInfo({
 
         <ActionButton
           ref={githubBtnRef}
-          onClick={onGithubClick}
+          onClick={() => {
+            // Trigger particle scatter effect
+            window.dispatchEvent(new CustomEvent("particle-scatter"));
+            // Small delay to let particles scatter before redirecting
+            setTimeout(() => {
+              onGithubClick();
+            }, 300);
+          }}
           onGitHubHoverChange={onGitHubHoverChange}
           isGitHub={true}
           icon={
@@ -338,6 +352,14 @@ function CardInfo({
         <ActionButton
           onProjectsHoverChange={onProjectsHoverChange}
           isProjects={true}
+          onClick={() => {
+            // Trigger particle scatter effect
+            window.dispatchEvent(new CustomEvent("particle-scatter"));
+            // Small delay to let particles scatter before opening workspace
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "projects" } }));
+            }, 300);
+          }}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
@@ -350,6 +372,14 @@ function CardInfo({
         <ActionButton
           onEducationHoverChange={onEducationHoverChange}
           isEducation={true}
+          onClick={() => {
+            // Trigger particle scatter effect
+            window.dispatchEvent(new CustomEvent("particle-scatter"));
+            // Small delay to let particles scatter before opening workspace
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "education" } }));
+            }, 300);
+          }}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
@@ -362,6 +392,14 @@ function CardInfo({
         <ActionButton
           onExperienceHoverChange={onExperienceHoverChange}
           isExperience={true}
+          onClick={() => {
+            // Trigger particle scatter effect
+            window.dispatchEvent(new CustomEvent("particle-scatter"));
+            // Small delay to let particles scatter before opening workspace
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "experience" } }));
+            }, 300);
+          }}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M20 6h-2V4c0-1.11-.89-2-2-2H8c-1.11 0-2 .89-2 2v2H4c-1.11 0-2 .89-2 2v11c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM8 4h8v2H8V4zm12 15H4V8h16v11z"/>
@@ -374,6 +412,14 @@ function CardInfo({
         <ActionButton
           onSkillsHoverChange={onSkillsHoverChange}
           isSkills={true}
+          onClick={() => {
+            // Trigger particle scatter effect
+            window.dispatchEvent(new CustomEvent("particle-scatter"));
+            // Small delay to let particles scatter before opening workspace
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "skills" } }));
+            }, 300);
+          }}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>

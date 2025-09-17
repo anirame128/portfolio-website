@@ -27,12 +27,12 @@ export default function ParticleBox({
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const workerRef = useRef<Worker | null>(null);
-  const transferredRef = useRef(false);
   const offscreenRef = useRef<OffscreenCanvas | null>(null);
-  const workerInitializedRef = useRef(false);
+  const transferredRef = useRef(false);
+  const initializedRef = useRef(false);
+
   const [boxWidth, setBoxWidth] = useState(800);
 
-  // match your layout logic
   const calcWidth = useCallback(() => {
     const padding = 16, margin = 32, cardWidth = 320, gap = 32, rightMargin = 16;
     const minW = 400, maxW = 1500;
@@ -43,39 +43,33 @@ export default function ParticleBox({
   useEffect(() => {
     const onResize = () => setBoxWidth(calcWidth());
     onResize();
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onResize, { passive: true });
     return () => window.removeEventListener("resize", onResize);
   }, [calcWidth]);
 
-  // One-time init: create worker and transfer control exactly once (survives StrictMode double-invoke)
+  // one-time init
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Create worker once
     if (!workerRef.current) {
-      workerRef.current = new Worker(new URL("./particles.worker.ts", import.meta.url), { type: "module" });
+      workerRef.current = new Worker(new URL("./particles-worker.ts", import.meta.url), { type: "module" });
     }
     const worker = workerRef.current;
 
-    // Guard for OffscreenCanvas availability
-    const hasOffscreen = typeof (canvas as unknown as { transferControlToOffscreen?: () => OffscreenCanvas }).transferControlToOffscreen === "function";
-    if (!hasOffscreen) {
-      // If not supported, do nothing (could add a canvas main-thread fallback here if desired)
+    const canTransfer = typeof (canvas as unknown as { transferControlToOffscreen?: () => OffscreenCanvas }).transferControlToOffscreen === "function";
+    if (!canTransfer) {
+      // You could implement a main-thread fallback here if you need to support Safari <16.4
       return;
     }
 
-    // Transfer once, or reuse saved OffscreenCanvas (avoid StrictMode double-transfer)
     if (!transferredRef.current && !offscreenRef.current) {
-      type CanvasWithOffscreen = HTMLCanvasElement & { transferControlToOffscreen: () => OffscreenCanvas };
-      offscreenRef.current = (canvas as CanvasWithOffscreen).transferControlToOffscreen();
+      offscreenRef.current = (canvas as unknown as { transferControlToOffscreen: () => OffscreenCanvas }).transferControlToOffscreen();
       transferredRef.current = true;
     }
-
     if (!offscreenRef.current) return;
 
-    // Initialize worker only once
-    if (!workerInitializedRef.current) {
+    if (!initializedRef.current) {
       worker.postMessage(
         {
           type: "init",
@@ -102,29 +96,35 @@ export default function ParticleBox({
         },
         [offscreenRef.current as unknown as Transferable]
       );
-      workerInitializedRef.current = true;
+      initializedRef.current = true;
     }
 
     return () => {
-      // In dev StrictMode, effects run twice: don't reset transferred/offscreen to avoid double-transfer
       worker.postMessage({ type: "dispose" });
     };
   }, [boxWidth, boxHeight, particleCount, maxDevicePixelRatio]);
 
-  // Forward hover state changes without blocking
+  // propagate hover state
   useEffect(() => {
-    workerRef.current?.postMessage({ 
-      type: "hover", 
-      isLinkedInHovered, 
+    workerRef.current?.postMessage({
+      type: "hover",
+      isLinkedInHovered,
       isGitHubHovered,
       isExperienceHovered,
       isProjectsHovered,
       isEducationHovered,
-      isSkillsHovered
+      isSkillsHovered,
     });
-  }, [isLinkedInHovered, isGitHubHovered, isExperienceHovered, isProjectsHovered, isEducationHovered, isSkillsHovered]);
+  }, [
+    isLinkedInHovered,
+    isGitHubHovered,
+    isExperienceHovered,
+    isProjectsHovered,
+    isEducationHovered,
+    isSkillsHovered,
+  ]);
 
-  // If size changes, notify worker to resize (no re-transfer)
+  // react to size changes
   useEffect(() => {
     workerRef.current?.postMessage({ type: "resize", width: boxWidth, height: boxHeight });
   }, [boxWidth, boxHeight]);

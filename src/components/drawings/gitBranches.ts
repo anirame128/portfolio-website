@@ -1,5 +1,5 @@
 // drawings/gitBranches.ts
-import { Pt, jitter, evenPick, pushVertical, pushHorizontal, pushCircle, exactCount, densify } from "./shapes";
+import { Pt, jitter, evenPick, pushVertical, pushHorizontal, pushCircle, exactCount } from "./shapes";
 
 export type Point = { x: number; y: number };
 
