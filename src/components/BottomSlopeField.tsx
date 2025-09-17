@@ -245,7 +245,6 @@ function SlopeMesh() {
         fragmentShader={frag}
         transparent
         depthWrite={false}
-        extensions={{ derivatives: true }}
         uniforms={uniforms}
       />
     </mesh>
