@@ -20,12 +20,10 @@ const CARD_DIMENSIONS = {
 export default function AnimatedCard({
   cardRef,
   linkedinBtnRef,
-  setLinkedinHovered,
   onLinkedinClick,
 }: {
   cardRef: React.RefObject<HTMLDivElement | null>;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
-  setLinkedinHovered: (hovered: boolean) => void;
   onLinkedinClick: () => void;
 }) {
   const [showContent, setShowContent] = useState(false);
@@ -46,7 +44,6 @@ export default function AnimatedCard({
       <CardContent
         showContent={showContent}
         linkedinBtnRef={linkedinBtnRef}
-        setLinkedinHovered={setLinkedinHovered}
         onLinkedinClick={onLinkedinClick}
       />
     </div>
@@ -58,12 +55,10 @@ export default function AnimatedCard({
 function CardContent({
   showContent,
   linkedinBtnRef,
-  setLinkedinHovered,
   onLinkedinClick,
 }: {
   showContent: boolean;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
-  setLinkedinHovered: (hovered: boolean) => void;
   onLinkedinClick: () => void;
 }) {
   return (
@@ -99,7 +94,6 @@ function CardContent({
           >
             <CardInfo
               linkedinBtnRef={linkedinBtnRef}
-              setLinkedinHovered={setLinkedinHovered}
               onLinkedinClick={onLinkedinClick}
             />
           </div>
@@ -161,11 +155,9 @@ function ActionButton({
 // Card Info Component
 function CardInfo({
   linkedinBtnRef,
-  setLinkedinHovered,
   onLinkedinClick,
 }: {
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
-  setLinkedinHovered: (hovered: boolean) => void;
   onLinkedinClick: () => void;
 }) {
   return (
@@ -189,8 +181,6 @@ function CardInfo({
       <div className="grid grid-cols-2 gap-2 mt-auto">
         <ActionButton
           ref={linkedinBtnRef}
-          onMouseEnter={() => setLinkedinHovered(true)}
-          onMouseLeave={() => setLinkedinHovered(false)}
           onClick={onLinkedinClick}
           icon={
             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
