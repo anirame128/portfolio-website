@@ -10,6 +10,10 @@ export default function Page() {
   const githubBtnRef = useRef<HTMLButtonElement>(null);
   const [isLinkedInHovered, setIsLinkedInHovered] = useState(false);
   const [isGitHubHovered, setIsGitHubHovered] = useState(false);
+  const [isExperienceHovered, setIsExperienceHovered] = useState(false);
+  const [isProjectsHovered, setIsProjectsHovered] = useState(false);
+  const [isEducationHovered, setIsEducationHovered] = useState(false);
+  const [isSkillsHovered, setIsSkillsHovered] = useState(false);
 
   // Handle LinkedIn button click - redirect
   const handleLinkedinClick = () => {
@@ -31,6 +35,26 @@ export default function Page() {
     setIsGitHubHovered(hovered);
   };
 
+  // Handle Experience hover state change
+  const handleExperienceHoverChange = (hovered: boolean) => {
+    setIsExperienceHovered(hovered);
+  };
+
+  // Handle Projects hover state change
+  const handleProjectsHoverChange = (hovered: boolean) => {
+    setIsProjectsHovered(hovered);
+  };
+
+  // Handle Education hover state change
+  const handleEducationHoverChange = (hovered: boolean) => {
+    setIsEducationHovered(hovered);
+  };
+
+  // Handle Skills hover state change
+  const handleSkillsHoverChange = (hovered: boolean) => {
+    setIsSkillsHovered(hovered);
+  };
+
 
   return (
     <main className="relative min-h-screen flex items-start justify-start p-4 bg-black pt-20">
@@ -45,12 +69,20 @@ export default function Page() {
               onGithubClick={handleGithubClick}
               onLinkedInHoverChange={handleLinkedInHoverChange}
               onGitHubHoverChange={handleGitHubHoverChange}
+              onExperienceHoverChange={handleExperienceHoverChange}
+              onProjectsHoverChange={handleProjectsHoverChange}
+              onEducationHoverChange={handleEducationHoverChange}
+              onSkillsHoverChange={handleSkillsHoverChange}
             />
             
             <div className="mr-4">
               <ParticleBox 
                 isLinkedInHovered={isLinkedInHovered} 
-                isGitHubHovered={isGitHubHovered} 
+                isGitHubHovered={isGitHubHovered}
+                isExperienceHovered={isExperienceHovered}
+                isProjectsHovered={isProjectsHovered}
+                isEducationHovered={isEducationHovered}
+                isSkillsHovered={isSkillsHovered}
               />
             </div>
           </div>

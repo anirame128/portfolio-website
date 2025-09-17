@@ -25,6 +25,10 @@ export default function AnimatedCard({
   onGithubClick,
   onLinkedInHoverChange,
   onGitHubHoverChange,
+  onExperienceHoverChange,
+  onProjectsHoverChange,
+  onEducationHoverChange,
+  onSkillsHoverChange,
 }: {
   cardRef: React.RefObject<HTMLDivElement | null>;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -33,6 +37,10 @@ export default function AnimatedCard({
   onGithubClick: () => void;
   onLinkedInHoverChange?: (isHovered: boolean) => void;
   onGitHubHoverChange?: (isHovered: boolean) => void;
+  onExperienceHoverChange?: (isHovered: boolean) => void;
+  onProjectsHoverChange?: (isHovered: boolean) => void;
+  onEducationHoverChange?: (isHovered: boolean) => void;
+  onSkillsHoverChange?: (isHovered: boolean) => void;
 }) {
   const [showContent, setShowContent] = useState(false);
 
@@ -57,6 +65,10 @@ export default function AnimatedCard({
           onGithubClick={onGithubClick}
           onLinkedInHoverChange={onLinkedInHoverChange}
           onGitHubHoverChange={onGitHubHoverChange}
+          onExperienceHoverChange={onExperienceHoverChange}
+          onProjectsHoverChange={onProjectsHoverChange}
+          onEducationHoverChange={onEducationHoverChange}
+          onSkillsHoverChange={onSkillsHoverChange}
         />
     </div>
   );
@@ -72,6 +84,10 @@ function CardContent({
   onGithubClick,
   onLinkedInHoverChange,
   onGitHubHoverChange,
+  onExperienceHoverChange,
+  onProjectsHoverChange,
+  onEducationHoverChange,
+  onSkillsHoverChange,
 }: {
   showContent: boolean;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -80,6 +96,10 @@ function CardContent({
   onGithubClick: () => void;
   onLinkedInHoverChange?: (isHovered: boolean) => void;
   onGitHubHoverChange?: (isHovered: boolean) => void;
+  onExperienceHoverChange?: (isHovered: boolean) => void;
+  onProjectsHoverChange?: (isHovered: boolean) => void;
+  onEducationHoverChange?: (isHovered: boolean) => void;
+  onSkillsHoverChange?: (isHovered: boolean) => void;
 }) {
   return (
     <div
@@ -119,6 +139,10 @@ function CardContent({
           onGithubClick={onGithubClick}
           onLinkedInHoverChange={onLinkedInHoverChange}
           onGitHubHoverChange={onGitHubHoverChange}
+          onExperienceHoverChange={onExperienceHoverChange}
+          onProjectsHoverChange={onProjectsHoverChange}
+          onEducationHoverChange={onEducationHoverChange}
+          onSkillsHoverChange={onSkillsHoverChange}
         />
           </div>
         </div>
@@ -152,8 +176,16 @@ function ActionButton({
   ref,
   onLinkedInHoverChange,
   onGitHubHoverChange,
+  onExperienceHoverChange,
+  onProjectsHoverChange,
+  onEducationHoverChange,
+  onSkillsHoverChange,
   isLinkedIn,
   isGitHub,
+  isExperience,
+  isProjects,
+  isEducation,
+  isSkills,
 }: {
   children: React.ReactNode;
   icon: React.ReactNode;
@@ -163,8 +195,16 @@ function ActionButton({
   ref?: React.RefObject<HTMLButtonElement | null>;
   onLinkedInHoverChange?: (isHovered: boolean) => void;
   onGitHubHoverChange?: (isHovered: boolean) => void;
+  onExperienceHoverChange?: (isHovered: boolean) => void;
+  onProjectsHoverChange?: (isHovered: boolean) => void;
+  onEducationHoverChange?: (isHovered: boolean) => void;
+  onSkillsHoverChange?: (isHovered: boolean) => void;
   isLinkedIn?: boolean;
   isGitHub?: boolean;
+  isExperience?: boolean;
+  isProjects?: boolean;
+  isEducation?: boolean;
+  isSkills?: boolean;
 }) {
   return (
     <button
@@ -182,6 +222,18 @@ function ActionButton({
         if (isGitHub) {
           onGitHubHoverChange?.(true);
         }
+        if (isExperience) {
+          onExperienceHoverChange?.(true);
+        }
+        if (isProjects) {
+          onProjectsHoverChange?.(true);
+        }
+        if (isEducation) {
+          onEducationHoverChange?.(true);
+        }
+        if (isSkills) {
+          onSkillsHoverChange?.(true);
+        }
       }}
       onMouseLeave={() => {
         onMouseLeave?.();
@@ -190,6 +242,18 @@ function ActionButton({
         }
         if (isGitHub) {
           onGitHubHoverChange?.(false);
+        }
+        if (isExperience) {
+          onExperienceHoverChange?.(false);
+        }
+        if (isProjects) {
+          onProjectsHoverChange?.(false);
+        }
+        if (isEducation) {
+          onEducationHoverChange?.(false);
+        }
+        if (isSkills) {
+          onSkillsHoverChange?.(false);
         }
       }}
       onClick={onClick}
@@ -208,6 +272,10 @@ function CardInfo({
   onGithubClick,
   onLinkedInHoverChange,
   onGitHubHoverChange,
+  onExperienceHoverChange,
+  onProjectsHoverChange,
+  onEducationHoverChange,
+  onSkillsHoverChange,
 }: {
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
   githubBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -215,6 +283,10 @@ function CardInfo({
   onGithubClick: () => void;
   onLinkedInHoverChange?: (isHovered: boolean) => void;
   onGitHubHoverChange?: (isHovered: boolean) => void;
+  onExperienceHoverChange?: (isHovered: boolean) => void;
+  onProjectsHoverChange?: (isHovered: boolean) => void;
+  onEducationHoverChange?: (isHovered: boolean) => void;
+  onSkillsHoverChange?: (isHovered: boolean) => void;
 }) {
   return (
     <div className="flex flex-col h-full">
@@ -264,6 +336,8 @@ function CardInfo({
         </ActionButton>
 
         <ActionButton
+          onProjectsHoverChange={onProjectsHoverChange}
+          isProjects={true}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
@@ -274,6 +348,8 @@ function CardInfo({
         </ActionButton>
 
         <ActionButton
+          onEducationHoverChange={onEducationHoverChange}
+          isEducation={true}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
@@ -284,6 +360,8 @@ function CardInfo({
         </ActionButton>
 
         <ActionButton
+          onExperienceHoverChange={onExperienceHoverChange}
+          isExperience={true}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M20 6h-2V4c0-1.11-.89-2-2-2H8c-1.11 0-2 .89-2 2v2H4c-1.11 0-2 .89-2 2v11c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zM8 4h8v2H8V4zm12 15H4V8h16v11z"/>
@@ -294,6 +372,8 @@ function CardInfo({
         </ActionButton>
 
         <ActionButton
+          onSkillsHoverChange={onSkillsHoverChange}
+          isSkills={true}
           icon={
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>

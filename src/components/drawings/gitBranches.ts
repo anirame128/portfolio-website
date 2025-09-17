@@ -1,4 +1,6 @@
 // drawings/gitBranches.ts
+import { Pt, jitter, evenPick, pushVertical, pushHorizontal, pushCircle, exactCount, densify } from "./shapes";
+
 export type Point = { x: number; y: number };
 
 export type BranchSpec = {
@@ -40,39 +42,6 @@ export type GitVizConfig = {
   budgetLinesRatio?: number;   // fraction for lines (rest goes to branches evenly)
 };
 
-type Pt = Point;
-
-const jitter = (pts: Pt[], j=0.8) => {
-  for (const p of pts) { p.x += (Math.random()-0.5)*j; p.y += (Math.random()-0.5)*j; }
-  return pts;
-};
-
-const evenPick = (pts: Pt[], k: number) => {
-  if (k >= pts.length) return pts;
-  const out: Pt[] = [];
-  const step = (pts.length - 1) / Math.max(1, k - 1);
-  for (let i = 0; i < k; i++) out.push(pts[Math.round(i*step)]);
-  return out;
-};
-
-const pushVertical = (arr: Pt[], x: number, y1: number, y2: number, step: number, stroke: number) => {
-  const [minY, maxY] = y1 <= y2 ? [y1, y2] : [y2, y1];
-  for (let y = minY; y <= maxY; y += step) {
-    for (let t = -Math.floor(stroke/2); t <= Math.floor(stroke/2); t += step) {
-      arr.push({ x: x + t, y });
-    }
-  }
-};
-
-const pushHorizontal = (arr: Pt[], y: number, x1: number, x2: number, step: number, stroke: number) => {
-  const [minX, maxX] = x1 <= x2 ? [x1, x2] : [x2, x1];
-  for (let x = minX; x <= maxX; x += step) {
-    for (let t = -Math.floor(stroke/2); t <= Math.floor(stroke/2); t += step) {
-      arr.push({ x, y: y + t });
-    }
-  }
-};
-
 const pushLine = (arr: Pt[], x1:number, y1:number, x2:number, y2:number, step:number, stroke:number) => {
   const dx = x2 - x1, dy = y2 - y1;
   const len = Math.hypot(dx, dy);
@@ -84,17 +53,6 @@ const pushLine = (arr: Pt[], x1:number, y1:number, x2:number, y2:number, step:nu
     for (let s = -Math.floor(stroke/2); s <= Math.floor(stroke/2); s += step) {
       // thickness approximated orthogonally (vertical thickening is fine visually)
       arr.push({ x, y: y + s });
-    }
-  }
-};
-
-const pushCircle = (arr: Pt[], cx:number, cy:number, r:number, step:number, stroke:number) => {
-  const peri = 2 * Math.PI * r;
-  const samples = Math.max(18, Math.floor(peri / step));
-  for (let i = 0; i < samples; i++) {
-    const a = (i / samples) * Math.PI * 2;
-    for (let t = -Math.floor(stroke/2); t <= Math.floor(stroke/2); t += step) {
-      arr.push({ x: cx + Math.cos(a) * (r + t), y: cy + Math.sin(a) * (r + t) });
     }
   }
 };
@@ -313,6 +271,7 @@ export function generateGitLogoTargets(cfg: GitVizConfig): Pt[] {
   const branchPts = pickExact(jitter(branchLine), askBranch);
   const nodePts   = pickExact(jitter(nodes),      askNodes);
 
-  // combine (always exactly P)
-  return [...trunkPts, ...branchPts, ...nodePts];
+  // combine with exact count
+  const all = [...trunkPts, ...branchPts, ...nodePts];
+  return exactCount(all, P, 0.6);
 }
