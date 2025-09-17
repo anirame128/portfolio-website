@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import AnimatedCard from "@/components/AnimatedCard";
-import RightSlopeField from "@/components/RightSlopeField";
+import BottomSlopeField from "@/components/BottomSlopeField";
 import TVPreview from "@/components/TVPreview";
 
 export default function Page() {
@@ -37,10 +37,10 @@ export default function Page() {
 
     setIsZooming(true);
 
-    // Redirect mid-zoom for seamless transition effect
+    // Redirect at 2/3 of the 800ms zoom animation for seamless "entering" effect
     setTimeout(() => {
       window.location.href = "https://www.linkedin.com/in/anirudh-ramesh123/";
-    }, 400); // Redirect at 2/3 of zoom animation for "entering" effect
+    }, 600); // Redirect at 75% of zoom animation (600ms out of 800ms)
   };
 
   // Reset zoom state when component mounts (handles back button navigation)
@@ -73,8 +73,8 @@ export default function Page() {
 
 
   return (
-    <main className="relative min-h-screen flex items-center justify-start p-4 bg-black">
-      <RightSlopeField />
+    <main className="relative min-h-screen flex items-start justify-start p-4 bg-black pt-20">
+      <BottomSlopeField />
 
       <AnimatedCard
         cardRef={cardRef}

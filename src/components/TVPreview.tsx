@@ -9,10 +9,12 @@ type Props = {
 };
 
 export default function TVPreview({ visible, cardRef, isZooming = false, profileUrl }: Props) {
-  // TV dimensions (centered on screen)
-  const WIDTH = 1000;
-  const HEIGHT = 600;
-  const RADIUS = 30;
+  // TV dimensions (responsive - centered on screen)
+  const [dimensions, setDimensions] = React.useState({
+    WIDTH: 1000,
+    HEIGHT: 600,
+    RADIUS: 30
+  });
 
   const tvRef = React.useRef<HTMLDivElement | null>(null);
   const [pathLen, setPathLen] = React.useState(0);
@@ -26,6 +28,19 @@ export default function TVPreview({ visible, cardRef, isZooming = false, profile
   const [lineOn, setLineOn] = React.useState(false);
   const [rectOn, setRectOn] = React.useState(false);
   const [imgOn, setImgOn] = React.useState(false);
+
+  // Calculate responsive dimensions
+  React.useLayoutEffect(() => {
+    function updateDimensions() {
+      const WIDTH = Math.min(1000, window.innerWidth * 0.8);
+      const HEIGHT = Math.min(600, window.innerHeight * 0.6);
+      setDimensions({ WIDTH, HEIGHT, RADIUS: 30 });
+    }
+    
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
 
   // Measure positions & lengths
   React.useLayoutEffect(() => {
@@ -51,7 +66,7 @@ export default function TVPreview({ visible, cardRef, isZooming = false, profile
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", measure);
     };
-  }, [cardRef, visible]);
+  }, [cardRef, visible, dimensions]);
 
   // Compute the horizontal-then-vertical path (but we'll only animate the horizontal part visually)
   const d = React.useMemo(() => {
@@ -68,10 +83,10 @@ export default function TVPreview({ visible, cardRef, isZooming = false, profile
       setPathLen(len);
     } catch {}
     // Perimeter of rounded rect
-    const straight = 2 * (WIDTH + HEIGHT - 2 * RADIUS);
-    const arcs = 2 * Math.PI * RADIUS;
+    const straight = 2 * (dimensions.WIDTH + dimensions.HEIGHT - 2 * dimensions.RADIUS);
+    const arcs = 2 * Math.PI * dimensions.RADIUS;
     setRectLen(straight + arcs);
-  }, [WIDTH, HEIGHT, RADIUS, d]);
+  }, [dimensions, d]);
 
   // Orchestrate: line → rect → image
   React.useEffect(() => {
@@ -110,12 +125,13 @@ export default function TVPreview({ visible, cardRef, isZooming = false, profile
         style={{ 
           position: "fixed",
           zIndex: 39, 
-          width: WIDTH, 
-          height: HEIGHT,
+          width: isZooming ? "100vw" : dimensions.WIDTH, 
+          height: isZooming ? "100vh" : dimensions.HEIGHT,
           left: "50%",
-          top: "50%",
+          top: isZooming ? "50%" : "35%",
           transform: "translate(-50%, -50%)",
-          pointerEvents: "none"
+          pointerEvents: "none",
+          transition: isZooming ? "all 800ms ease-out" : "none"
         }}
       />
 
@@ -160,16 +176,16 @@ export default function TVPreview({ visible, cardRef, isZooming = false, profile
         {pts && !isZooming && !imgOn && (
           <rect
             x="50%"
-            y="50%"
-            width={WIDTH - 3}
-            height={HEIGHT - 3}
-            rx={RADIUS}
-            ry={RADIUS}
+            y="35%"
+            width={dimensions.WIDTH - 3}
+            height={dimensions.HEIGHT - 3}
+            rx={dimensions.RADIUS}
+            ry={dimensions.RADIUS}
             fill="none"
             stroke="url(#tvStroke)"
             strokeWidth="3"
             filter="url(#tvGlow)"
-            transform={`translate(-${(WIDTH - 3) / 2}, -${(HEIGHT - 3) / 2})`}
+            transform={`translate(-${(dimensions.WIDTH - 3) / 2}, -${(dimensions.HEIGHT - 3) / 2})`}
             style={{
               transition: "stroke-dashoffset 620ms cubic-bezier(.2,.8,.2,1), opacity 200ms",
               opacity: visible ? 1 : 0,
@@ -184,17 +200,17 @@ export default function TVPreview({ visible, cardRef, isZooming = false, profile
       <div
         className={`
           ${visible ? "opacity-100" : "opacity-0"}
-          transition-all duration-600 ease-out
+          ${isZooming ? "transition-all duration-800 ease-out" : "transition-all duration-600 ease-out"}
         `}
         style={{ 
           position: "fixed",
           zIndex: 41, 
-          width: isZooming ? "100vw" : WIDTH, 
-          height: isZooming ? "100vh" : HEIGHT, 
-          borderRadius: isZooming ? "0" : RADIUS, 
+          width: isZooming ? "100vw" : dimensions.WIDTH, 
+          height: isZooming ? "100vh" : dimensions.HEIGHT, 
+          borderRadius: isZooming ? "0" : dimensions.RADIUS, 
           overflow: "hidden",
           left: "50%",
-          top: "50%",
+          top: isZooming ? "50%" : "35%",
           transform: "translate(-50%, -50%)"
         }}
       >
