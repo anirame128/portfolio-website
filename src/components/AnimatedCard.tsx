@@ -29,6 +29,7 @@ export default function AnimatedCard({
   onProjectsHoverChange,
   onEducationHoverChange,
   onSkillsHoverChange,
+  onProjectsClick,
 }: {
   cardRef: React.RefObject<HTMLDivElement | null>;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -41,6 +42,7 @@ export default function AnimatedCard({
   onProjectsHoverChange?: (isHovered: boolean) => void;
   onEducationHoverChange?: (isHovered: boolean) => void;
   onSkillsHoverChange?: (isHovered: boolean) => void;
+  onProjectsClick?: () => void;
 }) {
   const [showContent, setShowContent] = useState(false);
 
@@ -69,6 +71,7 @@ export default function AnimatedCard({
           onProjectsHoverChange={onProjectsHoverChange}
           onEducationHoverChange={onEducationHoverChange}
           onSkillsHoverChange={onSkillsHoverChange}
+          onProjectsClick={onProjectsClick}
         />
     </div>
   );
@@ -88,6 +91,7 @@ function CardContent({
   onProjectsHoverChange,
   onEducationHoverChange,
   onSkillsHoverChange,
+  onProjectsClick,
 }: {
   showContent: boolean;
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -100,6 +104,7 @@ function CardContent({
   onProjectsHoverChange?: (isHovered: boolean) => void;
   onEducationHoverChange?: (isHovered: boolean) => void;
   onSkillsHoverChange?: (isHovered: boolean) => void;
+  onProjectsClick?: () => void;
 }) {
   return (
     <div
@@ -143,6 +148,7 @@ function CardContent({
           onProjectsHoverChange={onProjectsHoverChange}
           onEducationHoverChange={onEducationHoverChange}
           onSkillsHoverChange={onSkillsHoverChange}
+          onProjectsClick={onProjectsClick}
         />
           </div>
         </div>
@@ -276,6 +282,7 @@ function CardInfo({
   onProjectsHoverChange,
   onEducationHoverChange,
   onSkillsHoverChange,
+  onProjectsClick,
 }: {
   linkedinBtnRef: React.RefObject<HTMLButtonElement | null>;
   githubBtnRef: React.RefObject<HTMLButtonElement | null>;
@@ -287,6 +294,7 @@ function CardInfo({
   onProjectsHoverChange?: (isHovered: boolean) => void;
   onEducationHoverChange?: (isHovered: boolean) => void;
   onSkillsHoverChange?: (isHovered: boolean) => void;
+  onProjectsClick?: () => void;
 }) {
   return (
     <div className="flex flex-col h-full">
@@ -355,9 +363,9 @@ function CardInfo({
           onClick={() => {
             // Trigger particle scatter effect
             window.dispatchEvent(new CustomEvent("particle-scatter"));
-            // Small delay to let particles scatter before opening workspace
+            // Small delay to let particles scatter before navigating
             setTimeout(() => {
-              window.dispatchEvent(new CustomEvent("open-workspace", { detail: { name: "projects" } }));
+              onProjectsClick?.();
             }, 300);
           }}
           icon={

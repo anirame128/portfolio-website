@@ -1,16 +1,16 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import RightSlopeField from "../RightSlopeField";
-import ProjectCard from "../ProjectCard";
+import { useRouter } from "next/navigation";
+import RightSlopeField from "../../components/RightSlopeField";
+import ProjectCard from "../../components/ProjectCard";
 
-interface ProjectsWorkspaceProps {
-  onClose: () => void;
-}
-
-export default function ProjectsWorkspace({ onClose }: ProjectsWorkspaceProps) {
+export default function ProjectsPage() {
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    // Start animation after workspace transition begins (0.1s delay to match transition timing)
+    // Start animation after page loads
     const timer = setTimeout(() => {
       setShouldAnimate(true);
     }, 100);
@@ -86,7 +86,27 @@ export default function ProjectsWorkspace({ onClose }: ProjectsWorkspaceProps) {
           </div>
         </div>
       </div>
+      
+      {/* Back button */}
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-8 left-8 text-white hover:text-gray-300 transition-colors z-20"
+        aria-label="Go back to main page"
+      >
+        <svg 
+          className="w-8 h-8" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+          />
+        </svg>
+      </button>
     </div>
   );
 }
-

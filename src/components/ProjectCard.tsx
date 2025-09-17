@@ -8,13 +8,13 @@ const ANIMATION_TIMING = {
   CARD_POP_DELAY: 400,
 } as const;
 
-// Card dimensions - vertical layout
+// Card dimensions - horizontal/landscape layout
 const CARD_DIMENSIONS = {
-  WIDTH: 400, // Slightly wider for better content display
-  HEIGHT: 500, // Taller for vertical layout
+  WIDTH: 1000, // Even larger width to fit more information
+  HEIGHT: 450, // Increased height for better content fit
   MARGIN: 16,
-  IMAGE_HEIGHT: 200, // Height for the image section
-  CONTENT_HEIGHT: 280, // Height for the content section
+  IMAGE_WIDTH: 500, // Width for the image section (left side)
+  CONTENT_WIDTH: 500, // Width for the content section (right side)
 } as const;
 
 interface ProjectCardProps {
@@ -23,6 +23,7 @@ interface ProjectCardProps {
   imageSrc: string;
   imageAlt: string;
   projectUrl: string;
+  liveUrl?: string; // Optional live demo URL
   skills: string[];
   delay?: number; // For staggered animations
 }
@@ -33,6 +34,7 @@ export default function ProjectCard({
   imageSrc,
   imageAlt,
   projectUrl,
+  liveUrl,
   skills,
   delay = 0,
 }: ProjectCardProps) {
@@ -63,24 +65,25 @@ export default function ProjectCard({
         }}
       >
         {/* Inner Card */}
-        <div className="w-full h-full bg-white rounded-2xl overflow-hidden flex flex-col">
-          {/* Image Section */}
+        <div className="w-full h-full bg-white rounded-2xl overflow-hidden flex flex-row">
+          {/* Image Section - Left Side */}
           <div 
             className="relative flex-shrink-0" 
-            style={{ height: CARD_DIMENSIONS.IMAGE_HEIGHT }}
+            style={{ width: CARD_DIMENSIONS.IMAGE_WIDTH }}
           >
             <ProjectImage src={imageSrc} alt={imageAlt} />
           </div>
 
-          {/* Content Section */}
+          {/* Content Section - Right Side */}
           <div
-            className="relative bg-white px-6 py-4 flex flex-col flex-grow"
-            style={{ height: CARD_DIMENSIONS.CONTENT_HEIGHT }}
+            className="relative bg-white px-6 py-5 flex flex-col flex-grow"
+            style={{ width: CARD_DIMENSIONS.CONTENT_WIDTH }}
           >
             <ProjectContent
               title={title}
               description={description}
               projectUrl={projectUrl}
+              liveUrl={liveUrl}
               skills={skills}
             />
           </div>
@@ -93,7 +96,7 @@ export default function ProjectCard({
 // Project Image Component
 function ProjectImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <Image
         src={src}
         alt={alt}
@@ -109,11 +112,13 @@ function ProjectContent({
   title,
   description,
   projectUrl,
+  liveUrl,
   skills,
 }: {
   title: string;
   description: string;
   projectUrl: string;
+  liveUrl?: string;
   skills: string[];
 }) {
   return (
@@ -124,13 +129,13 @@ function ProjectContent({
       </h3>
 
       {/* Description */}
-      <p className="text-sm text-gray-600 mb-4 font-bricolage leading-relaxed">
+      <p className="text-sm text-gray-600 mb-4 font-bricolage leading-relaxed flex-grow">
         {description}
       </p>
 
       {/* Skills */}
-      <div className="mb-4 flex-grow">
-        <h4 className="text-xs font-medium text-gray-500 mb-2 font-bricolage">
+      <div className="mb-4">
+        <h4 className="text-sm font-medium text-gray-500 mb-2 font-bricolage">
           Skills Used:
         </h4>
         <div className="flex flex-wrap gap-1.5">
@@ -145,29 +150,48 @@ function ProjectContent({
         </div>
       </div>
 
-      {/* Project Link Button */}
-      <div className="mt-auto">
-        <ProjectButton url={projectUrl} />
+      {/* Project Link Buttons */}
+      <div className="flex gap-3 mt-auto pt-2">
+        <ProjectButton url={projectUrl} label="View Code" icon="code" />
+        {liveUrl && (
+          <ProjectButton url={liveUrl} label="Live Demo" icon="external" />
+        )}
       </div>
     </div>
   );
 }
 
 // Project Button Component
-function ProjectButton({ url }: { url: string }) {
+function ProjectButton({ 
+  url, 
+  label, 
+  icon 
+}: { 
+  url: string; 
+  label: string; 
+  icon: 'code' | 'external'; 
+}) {
+  const iconSvg = icon === 'code' ? (
+    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    </svg>
+  ) : (
+    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+  );
+
   return (
     <button
-      className="group flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-transform duration-300 relative overflow-hidden shimmer-flow glow-pulse button-hover cursor-pointer mt-auto"
+      className="group flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-transform duration-300 relative overflow-hidden shimmer-flow glow-pulse button-hover cursor-pointer flex-1"
       style={{
         background: "linear-gradient(45deg,#7dd3fc,#3b82f6,#1e40af,#3b82f6,#7dd3fc)",
         backgroundSize: "200% 200%",
       }}
       onClick={() => window.open(url, '_blank')}
     >
-      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-      </svg>
-      <span className="text-sm font-medium text-white font-bricolage">View Project</span>
+      {iconSvg}
+      <span className="text-sm font-medium text-white font-bricolage">{label}</span>
     </button>
   );
 }

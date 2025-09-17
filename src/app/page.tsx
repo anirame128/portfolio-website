@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import AnimatedCard from "@/components/AnimatedCard";
 import BottomSlopeField from "@/components/BottomSlopeField";
 import ParticleBox from "@/components/ParticleBox";
@@ -20,6 +21,7 @@ export default function Page() {
   const [isSkillsHovered, setIsSkillsHovered] = useState(false);
 
   const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceName>(null);
+  const router = useRouter();
 
   // Handle LinkedIn button click - redirect
   const handleLinkedinClick = () => {
@@ -59,6 +61,11 @@ export default function Page() {
   // Handle Skills hover state change
   const handleSkillsHoverChange = (hovered: boolean) => {
     setIsSkillsHovered(hovered);
+  };
+
+  // Handle Projects button click - navigate to route
+  const handleProjectsClick = () => {
+    router.push("/projects");
   };
 
   // Listen for button clicks from CardInfo (via CustomEvent)
@@ -148,6 +155,7 @@ export default function Page() {
                   onProjectsHoverChange={handleProjectsHoverChange}
                   onEducationHoverChange={handleEducationHoverChange}
                   onSkillsHoverChange={handleSkillsHoverChange}
+                  onProjectsClick={handleProjectsClick}
                 />
               </motion.div>
 
