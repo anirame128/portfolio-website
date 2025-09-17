@@ -43,7 +43,7 @@ body {
 
 .shimmer-border {
   background-size: 200% 200%;
-  animation: shimmer 4s linear infinite;
+  animation: shimmer-flow 4s linear infinite;
 }
 
 .shimmer-flow {
