@@ -36,15 +36,33 @@ export default function EducationPage() {
               </p>
             </div>
 
-            {/* Education Content - Placeholder */}
+            {/* Education Content */}
             <div className="space-y-12">
               <div className="flex justify-start pl-4">
                 <div className="bg-white rounded-2xl p-8 shadow-lg">
-                  <h2 className="text-2xl font-semibold text-black font-bricolage mb-4">
-                    Education Content Coming Soon
+                  <h2 className="text-2xl font-semibold text-black font-bricolage mb-6">
+                    University of California, Berkeley
                   </h2>
+                  <div className="text-sm text-gray-600 mb-4">Expected Graduation: May 2027</div>
+                  <h3 className="text-xl font-semibold text-black font-bricolage mb-3">
+                    Master of Information and Data Science
+                  </h3>
+                  <p className="text-gray-600 font-bricolage mb-6">
+                    Advanced studies in data science, machine learning, and information systems.
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-start pl-4">
+                <div className="bg-white rounded-2xl p-8 shadow-lg">
+                  <h2 className="text-2xl font-semibold text-black font-bricolage mb-6">
+                    University of Illinois, Urbana-Champaign
+                  </h2>
+                  <div className="text-sm text-gray-600 mb-4">Aug 2021 - May 2025</div>
+                  <h3 className="text-xl font-semibold text-black font-bricolage mb-3">
+                    Bachelor of Science in Computer Science
+                  </h3>
                   <p className="text-gray-600 font-bricolage">
-                    This section will showcase your educational background, degrees, certifications, and academic achievements.
+                    Comprehensive computer science education with focus on software engineering and algorithms.
                   </p>
                 </div>
               </div>
