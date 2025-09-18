@@ -1,9 +1,9 @@
-import { generateInLetterTargets, type LetterConfig } from "./drawings/InLetters";
-import { generateGitLogoTargets, type GitVizConfig } from "./drawings/GitBranches";
-import { generateExperienceTargets, type IconConfig as ExperienceConfig } from "./drawings/ExperienceBriefcase";
-import { generateProjectsTargets, type IconConfig as ProjectsConfig } from "./drawings/ProjectsKanban";
-import { generateEducationTargets, type IconConfig as EducationConfig } from "./drawings/EducationCap";
-import { generateSkillsTargets, type IconConfig as SkillsConfig } from "./drawings/SkillsGear";
+import { generateInLetterTargets, type LetterConfig } from "./drawings/LinkedInParticles";
+import { generateGitLogoTargets, type GitVizConfig } from "./drawings/GitHubParticles";
+import { generateExperienceTargets, type IconConfig as ExperienceConfig } from "./drawings/ExperienceParticles";
+import { generateProjectsTargets, type IconConfig as ProjectsConfig } from "./drawings/ProjectsParticles";
+import { generateEducationTargets, type IconConfig as EducationConfig } from "./drawings/EducationParticles";
+import { generateSkillsTargets, type IconConfig as SkillsConfig } from "./drawings/SkillsParticles";
 
 /* ----------------------------- Types ----------------------------- */
 type Physics = {
