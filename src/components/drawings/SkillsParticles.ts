@@ -1,82 +1,87 @@
-// drawings/skillsGear.ts
+// drawings/SkillsParticles.ts
+// Generates: Less Than and Greater Than Symbols
 import { Pt, jitter, exactCount, pushCircle, densify } from "./shapes";
 
 export type IconConfig = { boxWidth: number; boxHeight: number; particleCount: number };
 
-// Simple 8-tooth gear: outer radius with teeth notches, inner hole
+/* ---------------------- Less Than and Greater Than Symbols ---------------------- */
 export const generateSkillsTargets = (cfg: IconConfig): Pt[] => {
   const { boxWidth: W, boxHeight: H, particleCount: P } = cfg;
 
   const S = Math.min(W, H);
-  const cx = W * 0.52, cy = H * 0.50;
+  const stroke = Math.max(2, Math.floor(4 * (S / 520)));
+  const baseStep = Math.max(2, Math.floor(3 * (S / 520)));
 
-  const R  = 0.26 * S;         // base radius
-  const toothLen = 0.06 * S;
-  const innerR = 0.10 * S;
+  // Center the symbols
+  const cx = W * 0.5, cy = H * 0.5;
+  const symbolSize = 0.25 * S; // Size of each symbol
+  const spacing = 0.25 * S; // Space between symbols
 
-  const stroke = Math.max(3, Math.floor(7 * (S/520)));
-  const stepB  = Math.max(2, Math.floor(4 * (S/520)));
+  const pts: Pt[] = [];
 
-  const outerPts: Pt[] = [];
-  const teeth = 8;
-
-  // draw outer circle with tooth rectangles approximated by radial spikes
-  pushCircle(outerPts, cx, cy, R, stepB, stroke);
-  for (let i = 0; i < teeth; i++) {
-    const a = (i / teeth) * Math.PI * 2;
-    const ax = cx + Math.cos(a) * R;
-    const ay = cy + Math.sin(a) * R;
-    const bx = cx + Math.cos(a) * (R + toothLen);
-    const by = cy + Math.sin(a) * (R + toothLen);
-
-    // approximate spike by sampling along the line from A to B with “stroke” thickness
-    const len = toothLen;
-    const n = Math.max(6, Math.floor(len / stepB));
-    for (let j = 0; j <= n; j++) {
-      const t = j / n;
-      const x = ax + (bx - ax) * t;
-      const y = ay + (by - ay) * t;
-      for (let s = -Math.floor(stroke/2); s <= Math.floor(stroke/2); s += stepB) {
-        // slight orthogonal jitter around the radial direction
-        const ox = -Math.sin(a) * s;
-        const oy =  Math.cos(a) * s;
-        outerPts.push({ x: x + ox, y: y + oy });
-      }
+  // Less than symbol (<) - left side
+  const leftCenterX = cx - spacing / 2;
+  
+  // Top line of < (from top-right to center)
+  const topStartX = leftCenterX + symbolSize * 0.4;
+  const topStartY = cy - symbolSize * 0.3;
+  const topEndX = leftCenterX;
+  const topEndY = cy;
+  
+  for (let t = 0; t <= 1; t += baseStep / Math.hypot(topEndX - topStartX, topEndY - topStartY)) {
+    const x = topStartX + (topEndX - topStartX) * t;
+    const y = topStartY + (topEndY - topStartY) * t;
+    for (let s = -Math.floor(stroke / 2); s <= Math.floor(stroke / 2); s++) {
+      pts.push({ x: x + s, y });
+    }
+  }
+  
+  // Bottom line of < (from center to bottom-right)
+  const bottomStartX = leftCenterX;
+  const bottomStartY = cy;
+  const bottomEndX = leftCenterX + symbolSize * 0.4;
+  const bottomEndY = cy + symbolSize * 0.3;
+  
+  for (let t = 0; t <= 1; t += baseStep / Math.hypot(bottomEndX - bottomStartX, bottomEndY - bottomStartY)) {
+    const x = bottomStartX + (bottomEndX - bottomStartX) * t;
+    const y = bottomStartY + (bottomEndY - bottomStartY) * t;
+    for (let s = -Math.floor(stroke / 2); s <= Math.floor(stroke / 2); s++) {
+      pts.push({ x: x + s, y });
     }
   }
 
-  const innerPts: Pt[] = [];
-  pushCircle(innerPts, cx, cy, innerR, stepB, Math.max(2, stroke - 2));
-
-  // densify
-  const est = outerPts.length + innerPts.length;
-  const factor = est ? Math.max(1, Math.sqrt(P / est)) : 1;
-  const step = densify(stepB, factor);
-
-  const OUT: Pt[] = [], IN: Pt[] = [];
-  pushCircle(OUT, cx, cy, R, step, stroke);
-  for (let i = 0; i < teeth; i++) {
-    const a = (i / teeth) * Math.PI * 2;
-    const ax = cx + Math.cos(a) * R;
-    const ay = cy + Math.sin(a) * R;
-    const bx = cx + Math.cos(a) * (R + toothLen);
-    const by = cy + Math.sin(a) * (R + toothLen);
-    const len = toothLen;
-    const n = Math.max(6, Math.floor(len / step));
-    for (let j = 0; j <= n; j++) {
-      const t = j / n;
-      const x = ax + (bx - ax) * t;
-      const y = ay + (by - ay) * t;
-      for (let s = -Math.floor(stroke/2); s <= Math.floor(stroke/2); s += step) {
-        const ox = -Math.sin(a) * s;
-        const oy =  Math.cos(a) * s;
-        OUT.push({ x: x + ox, y: y + oy });
-      }
+  // Greater than symbol (>) - right side
+  const rightCenterX = cx + spacing / 2;
+  
+  // Top line of > (from top-left to center)
+  const topStartX2 = rightCenterX - symbolSize * 0.4;
+  const topStartY2 = cy - symbolSize * 0.3;
+  const topEndX2 = rightCenterX;
+  const topEndY2 = cy;
+  
+  for (let t = 0; t <= 1; t += baseStep / Math.hypot(topEndX2 - topStartX2, topEndY2 - topStartY2)) {
+    const x = topStartX2 + (topEndX2 - topStartX2) * t;
+    const y = topStartY2 + (topEndY2 - topStartY2) * t;
+    for (let s = -Math.floor(stroke / 2); s <= Math.floor(stroke / 2); s++) {
+      pts.push({ x: x + s, y });
     }
   }
-  pushCircle(IN, cx, cy, innerR, step, Math.max(2, stroke - 2));
+  
+  // Bottom line of > (from center to bottom-left)
+  const bottomStartX2 = rightCenterX;
+  const bottomStartY2 = cy;
+  const bottomEndX2 = rightCenterX - symbolSize * 0.4;
+  const bottomEndY2 = cy + symbolSize * 0.3;
+  
+  for (let t = 0; t <= 1; t += baseStep / Math.hypot(bottomEndX2 - bottomStartX2, bottomEndY2 - bottomStartY2)) {
+    const x = bottomStartX2 + (bottomEndX2 - bottomStartX2) * t;
+    const y = bottomStartY2 + (bottomEndY2 - bottomStartY2) * t;
+    for (let s = -Math.floor(stroke / 2); s <= Math.floor(stroke / 2); s++) {
+      pts.push({ x: x + s, y });
+    }
+  }
 
-  return exactCount([...jitter(OUT,0.7), ...jitter(IN,0.6)], P, 0.6);
+  return exactCount(jitter(pts, 0.3), P, 0.7);
 };
 
 
