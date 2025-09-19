@@ -78,7 +78,7 @@ export default function ExperiencePage() {
                     Software Engineer
                   </h3>
                   <ul className="text-gray-600 font-bricolage space-y-2">
-                    <li>• Engineered comprehensive Fortnite Creative analytics platform with time-series forecasting engine using Holt's double exponential smoothing and seasonal decomposition, achieving 7-day player trend predictions with confidence intervals and IQR-based outlier detection for 1,200+ maps</li>
+                    <li>• Engineered comprehensive Fortnite Creative analytics platform with time-series forecasting engine using Holt&apos;s double exponential smoothing and seasonal decomposition, achieving 7-day player trend predictions with confidence intervals and IQR-based outlier detection for 1,200+ maps</li>
                     <li>• Built and deployed Playwright web scraping service on Railway collecting real-time CCU data every 2 minutes with 99% uptime, integrated Supabase pipelines for high-frequency data ingestion, and developed React dashboard with Chart.js visualizations featuring dynamic map selection and animated loading states</li>
                   </ul>
                 </div>

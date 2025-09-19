@@ -1,6 +1,6 @@
 // drawings/SkillsParticles.ts
 // Generates: Less Than and Greater Than Symbols
-import { Pt, jitter, exactCount, pushCircle, densify } from "./shapes";
+import { Pt, jitter, exactCount } from "./shapes";
 
 export type IconConfig = { boxWidth: number; boxHeight: number; particleCount: number };
 

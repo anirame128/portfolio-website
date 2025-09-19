@@ -1,6 +1,6 @@
 // drawings/EducationParticles.ts
 // Generates: Diploma with Box and Lines
-import { Pt, jitter, exactCount, pushCircle, densify } from "./shapes";
+import { Pt, jitter, exactCount, pushCircle } from "./shapes";
 
 export type IconConfig = { boxWidth: number; boxHeight: number; particleCount: number };
 
